@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>GlassMart Business Analytics</title>
+
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 30px;
+            font-family: Arial, sans-serif;
+            background: #f4f6fb;
+            color: #20243a;
+        }
+
+        h1 {
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: #777;
+            margin-bottom: 30px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 18px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 24px;
+            border-radius: 14px;
+            box-shadow: 0 4px 15px #00000008;
+        }
+
+        .card h3 {
+            color: #777;
+            font-size: 14px;
+        }
+
+        .card h2 {
+            font-size: 27px;
+            margin-bottom: 0;
+        }
+
+        .panel {
+            background: white;
+            padding: 25px;
+            border-radius: 14px;
+            margin-bottom: 25px;
+        }
+
+        input, select, button {
+            padding: 11px;
+            margin: 7px 0;
+            border-radius: 7px;
+            border: 1px solid #ddd;
+        }
+
+        button {
+            background: #6258e8;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #4940bd;
+        }
+
+        .message {
+            background: #e4f8eb;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        img {
+            max-width: 100%;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <h1>GlassMart Analytics</h1>
+
+    <p class="subtitle">
+        E-Commerce Business Intelligence Dashboard
+    </p>
+
+
+    {% with messages = get_flashed_messages() %}
+        {% for message in messages %}
+            <div class="message">{{ message }}</div>
+        {% endfor %}
+    {% endwith %}
+
+
+    <section class="cards">
+
+        <div class="card">
+            <h3>Total Revenue</h3>
+            <h2>₹{{ "{:,.2f}".format(metrics.revenue) }}</h2>
+        </div>
+
+        <div class="card">
+            <h3>Total Orders</h3>
+            <h2>{{ metrics.orders }}</h2>
+        </div>
+
+        <div class="card">
+            <h3>Average Order Value</h3>
+            <h2>₹{{ "{:,.2f}".format(metrics.aov) }}</h2>
+        </div>
+
+        <div class="card">
+            <h3>Units Sold</h3>
+            <h2>{{ metrics.quantity }}</h2>
+        </div>
+
+        <div class="card">
+            <h3>Products Listed</h3>
+            <h2>{{ product_count }}</h2>
+        </div>
+
+        <div class="card">
+            <h3>Low Stock Products</h3>
+            <h2>{{ low_stock }}</h2>
+        </div>
+
+    </section>
+
+
+    <section class="panel">
+
+        <h2>Upload Business Data</h2>
+
+        <p>
+            Export CSV files from your GlassMart Seller Portal
+            and upload them here.
+        </p>
+
+        <form action="/upload" method="POST" enctype="multipart/form-data">
+
+            <label>Select data type:</label>
+
+            <select name="file_type" required>
+                <option value="sales">Sales Log</option>
+                <option value="inventory">Inventory</option>
+            </select>
+
+            <br>
+
+            <label>Select CSV file:</label>
+
+            <input type="file" name="file" accept=".csv" required>
+
+            <br>
+
+            <button type="submit">Upload and Analyse</button>
+
+        </form>
+
+    </section>
+
+
+    <section class="panel">
+
+        <h2>Revenue by Product</h2>
+
+        {% if chart %}
+            {{ chart | safe }}
+        {% else %}
+            <p>Upload a Sales Log CSV to generate charts.</p>
+        {% endif %}
+
+    </section>
+
+
+    <section class="panel">
+
+        <h2>Matplotlib Revenue Chart</h2>
+
+        <img
+            src="{{ url_for('static', filename='charts/revenue.png') }}"
+            alt="Product revenue chart"
+        >
+
+    </section>
+
+
+</body>
+
+</html>
