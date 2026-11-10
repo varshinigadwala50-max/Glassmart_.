@@ -29,6 +29,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATABASE = os.path.join(BASE_DIR, "glassmart.db")
 
 UPLOAD_FOLDER = os.path.join(BASE_DIR, "uploads")
+IMAGE_FOLDER = os.path.join(BASE_DIR, "assets", "images")
 CHART_FOLDER = os.path.join(BASE_DIR, "static", "charts")
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -264,6 +265,10 @@ def create_matplotlib_chart():
 
 
 # ---------------- DASHBOARD ROUTE ----------------
+
+@app.route("/assets/images/<path:filename>")
+def product_image(filename):
+    return send_from_directory(IMAGE_FOLDER, filename)
 
 @app.route("/")
 def shop():
